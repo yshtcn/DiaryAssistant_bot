@@ -59,7 +59,7 @@ def set_bot_commands():
             {"command": "done", "description": "结束记录：发送并开始新的记录."},
             {"command": "check", "description": "检查记录，已有记录。"}
         ]
-        response = requests.post(set_commands_url, json={"commands": commands})
+        response = requests.post(set_commands_url, json={"commands": commands}, proxies=proxies)
         response.raise_for_status()  # 如果响应状态码不是200，引发HTTPError异常
 
         return response.json()
@@ -111,7 +111,7 @@ def send_message(chat_id, text):
 def funcion_send_message(chat_id, text, reply_markup=None):
     url = URL + "sendMessage"
     params = {'chat_id': chat_id, 'text': text, 'reply_markup': reply_markup}
-    requests.post(url, params)
+    requests.post(url, params, proxies=proxies)
 
 def process_message_queue():
     # 尝试从文件中加载消息队列
