@@ -55,14 +55,13 @@ except (FileNotFoundError, json.JSONDecodeError):
 def set_bot_commands():
     set_commands_url = URL + "setMyCommands"
     commands = [
-        {"command": "/done", "description": "结束记录：发送并开始新的记录"},
-        {"command": "/check", "description": "检查记录，已有记录"}
+        {"command": "/done", "description": "结束记录：发送并开始新的记录."},
+        {"command": "/check", "description": "检查记录，已有记录。"}
     ]
-
     response = requests.post(set_commands_url, json={"commands": commands})
     return response.json()
 
-
+set_bot_commands()
 
 # 尝试从文件中加载黑名单
 try:
@@ -164,8 +163,9 @@ def main():
                 if unique_id not in blacklist:
                     # 处理“done”命令
                     if message_text.lower() == "/start":
-                        result = set_bot_commands
-                        print(f"set menu：{result}")   
+                        result = set_bot_commands()
+                        print(f"set menu：{result}")
+                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送 /check 查看已发送的内容。记录完毕可以发送 /done ，我会把所有内容整合在一起发送给您。")   
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
