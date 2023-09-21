@@ -68,7 +68,6 @@ def set_bot_commands():
     except Exception as err:
         return f"An error occurred: {err}"
 
-set_bot_commands()
 
 # 尝试从文件中加载黑名单
 try:
@@ -120,23 +119,28 @@ def process_message_queue():
             message_queue = json.load(f)
     except FileNotFoundError:
         message_queue = []
-    
+        
     # 遍历消息队列，尝试发送消息
+    remaining_messages = []
     for message in message_queue:
         chat_id = message['chat_id']
         text = message['text']
         try:
             url = URL + "sendMessage"
-            params = {'chat_id': chat_id, 'text': text}
-            r = requests.get(url, params=params, proxies=proxies)
+            payload = {'chat_id': chat_id, 'text': text}
+            r = requests.post(url, json=payload, proxies=proxies)
             if r.status_code == 200:
-                message_queue.remove(message)
+                continue
+            else:
+                remaining_messages.append(message)
         except Exception as e:
             print(f"Error sending message: {e}")
-    
-    # 将更新后的消息队列保存回文件
+            remaining_messages.append(message)
+
+    # 将更新后（或未成功发送的）消息队列保存回文件
     with open('message_queue.json', 'w') as f:
-        json.dump(message_queue, f)
+        json.dump(remaining_messages, f)
+
 
 
 # 主程序逻辑
