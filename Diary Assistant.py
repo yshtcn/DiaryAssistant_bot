@@ -127,7 +127,7 @@ def process_message_queue():
         text = message['text']
         try:
             url = URL + "sendMessage"
-            payload = {'chat_id': chat_id, 'text': text}
+            payload = {'chat_id': chat_id, 'text': text,'parse_mode': 'Markdown'}
             r = requests.post(url, json=payload, proxies=proxies)
             if r.status_code == 200:
                 continue
@@ -180,12 +180,12 @@ def main():
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"以下是记录的全部内容：\n\n{main_text}\n\n继续发送将开始新的记录.")
+                        send_message(chat_id_str, f"#最终内容\n以下是记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将开始新的记录。")
                         user_data[chat_id_str] = []
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/check":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"以下是已记录的全部内容：\n\n{main_text}\n\n继续发送将当前的记录.")
+                        send_message(chat_id_str, f"#当前内容\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将当前的记录。")
                         blacklist.append(unique_id)
                     else:
                         send_message(chat_id_str, f"{message_text_with_datetime}")
@@ -209,7 +209,7 @@ def main():
                 with open('blacklist.json', 'w') as f:
                     json.dump(blacklist, f)
 
-                print("process message queue...")
+                print("Process message queue...")
                 process_message_queue()                
         else:
             print(f"{URL} Received updates: {updates}")
@@ -219,7 +219,7 @@ def main():
         print("process message queue...")
         process_message_queue()
         # 每30s检查一次
-        print("waiting 30s...")
+        print("Next time in 30 seconds...")
         time.sleep(30)
 
 # 运行主函数
