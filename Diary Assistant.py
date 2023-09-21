@@ -52,6 +52,16 @@ try:
 except (FileNotFoundError, json.JSONDecodeError):
     user_data = {}
 
+def set_bot_commands():
+    set_commands_url = URL + "setMyCommands"
+    commands = [
+        {"command": "/done", "description": "结束记录：发送并开始新的记录"},
+        {"command": "/check", "description": "检查记录，已有记录"}
+    ]
+
+    response = requests.post(set_commands_url, json={"commands": commands})
+    return response.json()
+
 
 
 # 尝试从文件中加载黑名单
@@ -92,6 +102,11 @@ def send_message(chat_id, text):
     except Exception as e:
         print(f"Error queuing message: {e}")
 
+def funcion_send_message(chat_id, text, reply_markup=None):
+    url = URL + "sendMessage"
+    params = {'chat_id': chat_id, 'text': text, 'reply_markup': reply_markup}
+    requests.post(url, params)
+
 def process_message_queue():
     # 尝试从文件中加载消息队列
     try:
@@ -116,7 +131,6 @@ def process_message_queue():
     # 将更新后的消息队列保存回文件
     with open('message_queue.json', 'w') as f:
         json.dump(message_queue, f)
-
 
 
 # 主程序逻辑
@@ -149,9 +163,18 @@ def main():
 
                 if unique_id not in blacklist:
                     # 处理“done”命令
-                    if message_text.lower() == "/done":
-                        send_message(chat_id_str, "\n\n".join(user_data[chat_id_str]))
+                    if message_text.lower() == "/start":
+                        result = set_bot_commands
+                        print(f"set menu：{result}")   
+                        blacklist.append(unique_id)       
+                    elif message_text.lower() == "/done":
+                        main_text="\n\n".join(user_data[chat_id_str])
+                        send_message(chat_id_str, f"以下是记录的全部内容：\n\n{main_text}\n\n继续发送将开始新的记录.")
                         user_data[chat_id_str] = []
+                        blacklist.append(unique_id)
+                    elif message_text.lower() == "/check":
+                        main_text="\n\n".join(user_data[chat_id_str])
+                        send_message(chat_id_str, f"以下是已记录的全部内容：\n\n{main_text}\n\n继续发送将当前的记录.")
                         blacklist.append(unique_id)
                     else:
                         send_message(chat_id_str, f"{message_text_with_datetime}")
@@ -179,13 +202,14 @@ def main():
                 process_message_queue()                
         else:
             print(f"{URL} Received updates: {updates}")
-            print("Error or no updates; retrying in 5 seconds...")
-            time.sleep(5)  # 等待5秒再重试
+            print("Error or no updates; retrying in 30 seconds...")
+            time.sleep(30)  # 等待5秒再重试
         
         print("process message queue...")
         process_message_queue()
-        # 每1分钟检查一次
-        time.sleep(15)
+        # 每30s检查一次
+        print("waiting 30s...")
+        time.sleep(30)
 
 # 运行主函数
 if __name__ == '__main__':
