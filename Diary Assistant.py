@@ -83,8 +83,8 @@ except FileNotFoundError:
 def get_updates(offset=None):
     try:
         url = URL + "getUpdates"
-        params = {'offset': offset}
-        r = requests.get(url, params=params, proxies=proxies)
+        params = {'offset': offset, 'timeout': 25}
+        r = requests.get(url, params=params, proxies=proxies,timeout=30)
         return r.json()
     except Exception as e:
         print(f"Error getting updates: {e}")
@@ -223,18 +223,18 @@ def main():
                 with open('blacklist.json', 'w') as f:
                     json.dump(blacklist, f)
 
-                print("process message queue...")
+                print("Process message queue...")
                 process_message_queue()                
         else:
             print(f"{URL} Received updates: {updates}")
-            print("Error or no updates; retrying in 30 seconds...")
-            time.sleep(30)  # 等待5秒再重试
+            print("Error or no updates; retrying in 5 seconds...")
+            time.sleep(5)  # 等待5秒再重试
         
-        print("process message queue...")
+        print("Process message queue...")
         process_message_queue()
         # 每30s检查一次
-        print("waiting 30s...")
-        time.sleep(30)
+        print("Nexttime in 5 seconds...")
+        time.sleep(5)
 
 # 运行主函数
 if __name__ == '__main__':
