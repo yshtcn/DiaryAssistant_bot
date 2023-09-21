@@ -145,17 +145,22 @@ def main():
 
             
 
+                chat_id_str = str(chat_id)
+
                 if unique_id not in blacklist:
                     # 处理“done”命令
-                    if message_text.lower() == "/todaydone":
-                        send_message(chat_id, "\n".join(user_data[chat_id]))
-                        user_data[chat_id] = []
+                    if message_text.lower() == "/done":
+                        send_message(chat_id_str, "\n\n".join(user_data[chat_id_str]))
+                        user_data[chat_id_str] = []
+                        blacklist.append(unique_id)
                     else:
-                        send_message(chat_id, f"{message_text_with_datetime}")
-                        if chat_id not in user_data:
-                            user_data[chat_id] = []
-                        user_data[chat_id].append(message_text)
+                        send_message(chat_id_str, f"{message_text_with_datetime}")
+                        if chat_id_str not in user_data:
+                            user_data[chat_id_str] = []
+                        user_data[chat_id_str].append(message_text)
                         blacklist.append(unique_id)  # 添加到黑名单
+
+                        
 
                     # 保存数据到文件
                     with open('user_data.json', 'w') as f:
@@ -170,13 +175,15 @@ def main():
                 with open('blacklist.json', 'w') as f:
                     json.dump(blacklist, f)
 
-                process_message_queue()
+                print("process message queue...")
+                process_message_queue()                
         else:
-            print(f"{URL}Received updates: {updates}")
+            print(f"{URL} Received updates: {updates}")
             print("Error or no updates; retrying in 5 seconds...")
             time.sleep(5)  # 等待5秒再重试
         
-        
+        print("process message queue...")
+        process_message_queue()
         # 每1分钟检查一次
         time.sleep(15)
 
