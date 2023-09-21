@@ -56,8 +56,9 @@ def set_bot_commands():
     try:
         set_commands_url = URL + "setMyCommands"
         commands = [
-            {"command": "done", "description": "结束记录：发送并开始新的记录."},
-            {"command": "check", "description": "检查记录，已有记录。"}
+            {"command": "done", "description": "结束记录：发送并开始新的记录。"},
+            {"command": "check", "description": "检查记录，已有记录。"},
+            {"command": "removelast", "description": "删除最后一条记录。"}
         ]
         response = requests.post(set_commands_url, json={"commands": commands}, proxies=proxies)
         response.raise_for_status()  # 如果响应状态码不是200，引发HTTPError异常
@@ -152,12 +153,17 @@ def main():
         print("Checking for updates...")  # Debugging line
         updates = get_updates(last_update_id)
         if updates and "result" in updates:
+           
+
             print(f"Received updates: {updates}")  # Debugging line
             for update in updates["result"]:
+                Messagetype='message'
+                if 'edited_message' in update:
+                    Messagetype='edited_message'
                 last_update_id = update["update_id"] + 1
-                chat_id = update["message"]["chat"]["id"]
-                message_id = update["message"]["message_id"]
-                message_text = update["message"]["text"]
+                chat_id = update[Messagetype]["chat"]["id"]
+                message_id = update[Messagetype]["message_id"]
+                message_text = update[Messagetype]["text"]
                 # 获取当前日期和时间
                 current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -173,20 +179,27 @@ def main():
 
                 if unique_id not in blacklist:
                     # 处理“done”命令
+                    result = set_bot_commands()
+                    print(f"set menu：{result}")
                     if message_text.lower() == "/start":
-                        result = set_bot_commands()
-                        print(f"set menu：{result}")
-                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送 /check 查看已发送的内容。记录完毕可以发送 /done ，我会把所有内容整合在一起发送给您。")   
+                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已发送的内容。\n /done 记录完毕，我会把所有内容整合在一起发送给您。\n /removelast 删除最后一条信息。")   
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"#最终内容\n以下是记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将开始新的记录。")
+                        send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将开始新的记录.")
                         user_data[chat_id_str] = []
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/check":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"#当前内容\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将当前的记录。")
+                        send_message(chat_id_str, f"#查看记录\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将当前的记录.")
                         blacklist.append(unique_id)
+                        # 新增：处理 "removelast" 命令
+                    elif message_text.lower() == "/removelast":
+                        if user_data[chat_id_str]:
+                            user_data[chat_id_str].pop()
+                            send_message(chat_id, "成功删除最后一条消息")
+                        else:
+                            send_message(chat_id, "没有消息可以删除")
                     else:
                         send_message(chat_id_str, f"{message_text_with_datetime}")
                         if chat_id_str not in user_data:
@@ -209,7 +222,7 @@ def main():
                 with open('blacklist.json', 'w') as f:
                     json.dump(blacklist, f)
 
-                print("Process message queue...")
+                print("process message queue...")
                 process_message_queue()                
         else:
             print(f"{URL} Received updates: {updates}")
@@ -219,7 +232,7 @@ def main():
         print("process message queue...")
         process_message_queue()
         # 每30s检查一次
-        print("Next time in 30 seconds...")
+        print("waiting 30s...")
         time.sleep(30)
 
 # 运行主函数
