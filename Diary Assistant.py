@@ -130,7 +130,7 @@ def process_message_queue():
             print(f"send to {url}:\n-----message text-----\n{text}\n-----message end-----")
             r = requests.post(url, json=payload, proxies=proxies)            
             if r.status_code == 200:
-                print("Message sent; nexttime in 2 seconds...")
+                print("Message sent; nexttime in 2 seconds...don't stop program!")
                 time.sleep(2) 
                 continue
             else:
@@ -139,7 +139,7 @@ def process_message_queue():
         except Exception as e:
             print(f"Error sending message,append to remaining messages: {e}")
             remaining_messages.append(message)
-            print(f"pauses for 10 seconds")
+            print(f"pauses for 10 seconds...don't stop program!")
             time.sleep(10) 
 
     # 将更新后（或未成功发送的）消息队列保存回文件
