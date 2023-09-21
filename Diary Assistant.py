@@ -56,6 +56,7 @@ def set_bot_commands():
     try:
         set_commands_url = URL + "setMyCommands"
         commands = [
+            {"command": "start", "description": "第一次使用机器人会提示使用，每次使用都会显示帮助。"},
             {"command": "done", "description": "结束记录：发送并开始新的记录。"},
             {"command": "check", "description": "检查记录，已有记录。"},
             {"command": "removelast", "description": "删除最后一条记录。"}
@@ -182,7 +183,7 @@ def main():
                     result = set_bot_commands()
                     print(f"set menu：{result}")
                     if message_text.lower() == "/start":
-                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已发送的内容。\n /done 记录完毕，我会把所有内容整合在一起发送给您。\n /removelast 删除最后一条信息。")   
+                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。注意：直接编辑信息并不会修改错误的记录！")   
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
