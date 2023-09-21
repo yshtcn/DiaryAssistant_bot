@@ -1,6 +1,3 @@
-# 修改代码以记录黑名单而非删除消息
-
-# 示例代码（请在本地环境中运行）
 import json
 import requests
 import time
@@ -124,20 +121,26 @@ def process_message_queue():
         
     # 遍历消息队列，尝试发送消息
     remaining_messages = []
-    for message in message_queue:
+    for message in message_queue:        
         chat_id = message['chat_id']
         text = message['text']
         try:
             url = URL + "sendMessage"
             payload = {'chat_id': chat_id, 'text': text,'parse_mode': 'Markdown'}
-            r = requests.post(url, json=payload, proxies=proxies)
+            print(f"send to {url}:\n-----message text-----\n{text}\n-----message end-----")
+            r = requests.post(url, json=payload, proxies=proxies)            
             if r.status_code == 200:
+                print("Message sent; nexttime in 2 seconds...")
+                time.sleep(2) 
                 continue
             else:
                 remaining_messages.append(message)
+                print(f"send faild;append to remaining messages:{r.status_code}")
         except Exception as e:
-            print(f"Error sending message: {e}")
+            print(f"Error sending message,append to remaining messages: {e}")
             remaining_messages.append(message)
+            print(f"pauses for 10 seconds")
+            time.sleep(10) 
 
     # 将更新后（或未成功发送的）消息队列保存回文件
     with open('message_queue.json', 'w') as f:
@@ -149,8 +152,9 @@ def process_message_queue():
 def main():
     print("Program started")  # Debugging line
     last_update_id = None
-    while True:     
-
+    while True:
+        result = set_bot_commands()
+        print(f"set menu：{result}")     
         print("Checking for updates...")  # Debugging line
         updates = get_updates(last_update_id)
         if updates and "result" in updates:
@@ -179,9 +183,7 @@ def main():
                 chat_id_str = str(chat_id)
 
                 if unique_id not in blacklist:
-                    # 处理“done”命令
-                    result = set_bot_commands()
-                    print(f"set menu：{result}")
+                    # 处理特殊命令
                     if message_text.lower() == "/start":
                         send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。注意：直接编辑信息并不会修改错误的记录！")   
                         blacklist.append(unique_id)       
@@ -198,7 +200,6 @@ def main():
                         main_text="\n\n".join(user_data[chat_id_str])
                         send_message(chat_id_str, f"#查看记录\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n发送消息将继续当前的记录.")
                         blacklist.append(unique_id)
-                        # 新增：处理 "removelast" 命令
                     elif message_text.lower() == "/removelast":
                         if user_data[chat_id_str]:
                             user_data[chat_id_str].pop()
@@ -210,7 +211,7 @@ def main():
                         if chat_id_str not in user_data:
                             user_data[chat_id_str] = []
                         user_data[chat_id_str].append(message_text)
-                        blacklist.append(unique_id)  # 添加到黑名单
+                        blacklist.append(unique_id)  
 
                         
 
@@ -227,18 +228,17 @@ def main():
                 with open('blacklist.json', 'w') as f:
                     json.dump(blacklist, f)
 
-                print("Process message queue...")
-                process_message_queue()                
+            
+                              
         else:
             print(f"{URL} Received updates: {updates}")
             print("Error or no updates; retrying in 10 seconds...")
             time.sleep(10)  # 等待5秒再重试
         
+
         print("Process message queue...")
         process_message_queue()
-        # 每30s检查一次
-        print("Nexttime in 3 seconds...")
-        time.sleep(3)
+        
 
 # 运行主函数
 if __name__ == '__main__':
