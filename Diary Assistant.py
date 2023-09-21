@@ -187,12 +187,16 @@ def main():
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将开始新的记录.")
+                        send_message(chat_id_str, f"#二次确认\n你真的要结束本次记录吗？确认请点击： /confirmdone \n如果不想结束本次记录，直接忽视这条信息、继续发送信息或使用其他指令都可以。")                        
+                        blacklist.append(unique_id)
+                    elif message_text.lower() == "/confirmdone":
+                        main_text="\n\n".join(user_data[chat_id_str])
+                        send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n\n```\n{main_text}\n```\n\下次发送消息将开始新的记录.")
                         user_data[chat_id_str] = []
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/check":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"#查看记录\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n继续发送将当前的记录.")
+                        send_message(chat_id_str, f"#查看记录\n以下是已记录的全部内容：\n\n```\n{main_text}\n```\n\n发送消息将继续当前的记录.")
                         blacklist.append(unique_id)
                         # 新增：处理 "removelast" 命令
                     elif message_text.lower() == "/removelast":
