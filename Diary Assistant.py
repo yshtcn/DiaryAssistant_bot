@@ -53,13 +53,20 @@ except (FileNotFoundError, json.JSONDecodeError):
     user_data = {}
 
 def set_bot_commands():
-    set_commands_url = URL + "setMyCommands"
-    commands = [
-        {"command": "/done", "description": "结束记录：发送并开始新的记录."},
-        {"command": "/check", "description": "检查记录，已有记录。"}
-    ]
-    response = requests.post(set_commands_url, json={"commands": commands})
-    return response.json()
+    try:
+        set_commands_url = URL + "setMyCommands"
+        commands = [
+            {"command": "done", "description": "结束记录：发送并开始新的记录."},
+            {"command": "check", "description": "检查记录，已有记录。"}
+        ]
+        response = requests.post(set_commands_url, json={"commands": commands})
+        response.raise_for_status()  # 如果响应状态码不是200，引发HTTPError异常
+
+        return response.json()
+    except requests.HTTPError as http_err:
+        return f"HTTP error occurred: {http_err}"
+    except Exception as err:
+        return f"An error occurred: {err}"
 
 set_bot_commands()
 
