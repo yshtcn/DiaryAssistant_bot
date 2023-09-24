@@ -53,7 +53,7 @@ def set_bot_commands():
     try:
         set_commands_url = URL + "setMyCommands"
         commands = [
-            {"command": "start", "description": "第一次使用机器人会提示使用，每次使用都会显示帮助。"},
+            {"command": "start", "description": "首次使用向导/显示帮助。"},
             {"command": "done", "description": "结束记录：发送并开始新的记录。"},
             {"command": "check", "description": "检查记录，已有记录。"},
             {"command": "removelast", "description": "删除最后一条记录。"}
@@ -173,7 +173,7 @@ def main():
                 current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # 在 message_text 前面加上日期和时间
-                message_text_with_datetime = f"【记录时间：{current_datetime}】\n{message_text}"
+                message_text_with_datetime = f"#记录成功\n\n```\n{message_text}\n```\n【信息记录时间：{current_datetime}】"
 
                 # 创建唯一标识符
                 unique_id = f"{TOKEN}_{chat_id}_{message_id}"            
