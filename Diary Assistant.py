@@ -185,7 +185,7 @@ def main():
                 if unique_id not in blacklist:
                     # 处理特殊命令
                     if message_text.lower() == "/start":
-                        send_message(chat_id_str, f"欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。注意：直接编辑信息并不会修改错误的记录！")   
+                        send_message(chat_id_str, f"#使用帮助\n欢迎使日记助手，你可以直接开始发送要记录的内容.随时可以发送: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。注意：直接编辑信息并不会修改错误的记录！")   
                         blacklist.append(unique_id)       
                     elif message_text.lower() == "/done":
                         main_text="\n\n".join(user_data[chat_id_str])
@@ -203,9 +203,9 @@ def main():
                     elif message_text.lower() == "/removelast":
                         if user_data[chat_id_str]:
                             user_data[chat_id_str].pop()
-                            send_message(chat_id, "成功删除最后一条消息")
+                            send_message(chat_id, "#操作提醒\n成功删除最后一条消息")
                         else:
-                            send_message(chat_id, "没有消息可以删除")
+                            send_message(chat_id, "#操作提醒\n没有消息可以删除")
                     else:
                         send_message(chat_id_str, f"{message_text_with_datetime}")
                         if chat_id_str not in user_data:
