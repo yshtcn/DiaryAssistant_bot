@@ -206,10 +206,11 @@ def main():
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/removelast":
                         if user_data[chat_id_str]:
-                            send_message(chat_id, "#操作提醒\n---\n```\n{main_text}\n```\n---\n这条信息已成功删除。)
+                            send_message(chat_id, f"#操作提醒\n---\n这条信息已成功删除。")
                             user_data[chat_id_str].pop()                            
                         else:
                             send_message(chat_id, "#操作提醒\n---\n没有消息可以删除。")
+                        blacklist.append(unique_id)
                     else:
                         send_message(chat_id_str, f"{message_text_with_datetime}")
                         if chat_id_str not in user_data:
