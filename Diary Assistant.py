@@ -186,7 +186,7 @@ def main():
                 if unique_id not in blacklist:
                     # 处理特殊命令
                     if message_text.lower() == "/start":
-                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使日记助手，你可以直接开始发送要记录的内容。以下是机器人可用指令: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）")   
+                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使用日记助手机器人，你可以直接开始发送要记录的内容。以下是机器人可用指令: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）")   
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/tips":
                         current_date = datetime.now().strftime("%Y年%m月%d日")
