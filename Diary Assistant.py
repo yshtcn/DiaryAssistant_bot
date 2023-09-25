@@ -154,6 +154,8 @@ def main():
     print("Program started")  # Debugging line
     last_update_id = None
     while True:
+        print("Process message queue...")
+        process_message_queue()
         result = set_bot_commands()
         print(f"set menu：{result}")     
         print("Checking for updates...")  # Debugging line
