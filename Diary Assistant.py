@@ -151,6 +151,8 @@ def process_message_queue():
 
 # 主程序逻辑
 def main():
+    print("Process message queue...")
+    process_message_queue()
     print("Program started")  # Debugging line
     last_update_id = None
     while True:
