@@ -151,19 +151,19 @@ def process_message_queue():
 
 # 主程序逻辑
 def main():
-    print("Program started")  # Debugging line
+    print("Program started")  
     last_update_id = None
     while True:
-        print("Process message queue...")
+        print("Process message queue...") 
         process_message_queue()
         result = set_bot_commands()
         print(f"set menu：{result}")     
-        print("Checking for updates...")  # Debugging line
+        print("Checking for updates...")  
         updates = get_updates(last_update_id)
         if updates and "result" in updates:
            
 
-            print(f"Received updates: {updates}")  # Debugging line
+            print(f"Received updates: {updates}")  
             for update in updates["result"]:
                 Messagetype='message'
                 if 'edited_message' in update:
