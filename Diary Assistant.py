@@ -206,8 +206,8 @@ def main():
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/removelast":
                         if user_data[chat_id_str]:
-                            send_message(chat_id, f"#操作提醒\n---\n这条信息已成功删除。")
-                            user_data[chat_id_str].pop()                            
+                            user_data[chat_id_str].pop()          
+                            send_message(chat_id, f"#操作提醒\n---\n最后一条信息已成功删除。")                  
                         else:
                             send_message(chat_id, "#操作提醒\n---\n没有消息可以删除。")
                         blacklist.append(unique_id)
