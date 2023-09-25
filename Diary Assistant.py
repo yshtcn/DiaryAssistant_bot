@@ -160,8 +160,7 @@ def main():
         print(f"set menu：{result}")     
         print("Checking for updates...")  
         updates = get_updates(last_update_id)
-        if updates and "result" in updates:
-           
+        if updates and "result" in updates:          
 
             print(f"Received updates: {updates}")  
             for update in updates["result"]:
