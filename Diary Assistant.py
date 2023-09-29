@@ -54,7 +54,8 @@ def set_bot_commands():
         set_commands_url = URL + "setMyCommands"
         commands = [
             {"command": "/start", "description": "首次使用"},
-            {"command": "/tips", "description": "GPT提示语"},
+            {"command": "/prompt", "description": "GPT日记提示语"},
+            {"command": "/stopprompt", "description": "GPT结束对话提示语"},
             {"command": "/done", "description": "结束记录"},
             {"command": "/check", "description": "检查记录"},
             {"command": "/removelast", "description": "删除最后记录"}
@@ -187,18 +188,22 @@ def main():
                 if unique_id not in blacklist:
                     # 处理特殊命令
                     if message_text.lower() == "/start":
-                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使用日记助手机器人，你可以直接开始发送要记录的内容。以下是机器人可用指令: \n/check 查看已记录的内容，并继续记录。\n /done 记录完毕，把记录发送给您，并开启新的记录。\n /removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）")   
+                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使用日记助手机器人，你可以直接开始发送要记录的内容。以下是机器人可用指令: \n/check #查看记录 \n/done #结束记录 \n/prompt 或 /stopprompt ： 开始或结束时的 #GPT提示语 \n/removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）")   
                         blacklist.append(unique_id)
-                    elif message_text.lower() == "/tips":
+                    elif message_text.lower() == "/prompt":
                         current_date = datetime.now().strftime("%Y年%m月%d日")
                         send_message(chat_id_str, f"#GPT提示词\n---\n```\nDear ChatGPT, 今天是{current_date}. 我希望你能成为我的日记助手。请注意: 在这一天里，无论我输入什么内容，你都只需要回复: \"####\" . 只有当我输入\"Hi ChatGPT, 让我们结束今天的日记\"时，你才开始执行我规定的任务.\n```")   
+                        blacklist.append(unique_id)
+                    elif message_text.lower() == "/stopprompt":
+                        current_date = datetime.now().strftime("%Y年%m月%d日")
+                        send_message(chat_id_str, "#GPT提示词\n---\n```\nHi ChatGPT, 让我们结束今天的日记\n```")   
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/done":
                         send_message(chat_id_str, f"#二次确认\n---\n你真的要结束本次记录吗？确认请点击： /confirmdone \n如果不想结束本次记录，直接忽视这条信息、继续发送信息或使用其他指令都可以。")                        
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/confirmdone":
                         main_text="\n\n".join(user_data[chat_id_str])
-                        send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n---\n```\n{main_text}\n```\n---\n\下次发送消息将开始新的记录.")
+                        send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n---\n```\n{main_text}\n```\n---\n下次发送消息将开始新的记录.")
                         user_data[chat_id_str] = []
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/check":
