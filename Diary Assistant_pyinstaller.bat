@@ -105,7 +105,7 @@ rd /S /Q %~dp0\build\build
 
 :: 进入打包目录并开始打包
 cd /d %~dp0\build
-pyinstaller --onefile --version-file %~dp0\version_info.txt "%~dp0\Diary Assistant.py"
+pyinstaller --onefile --version-file %~dp0\version_info.txt "%~dp0\DiaryAssistant.py"
 
 ::更新标题
 title "AutoPyInstaller：打包完毕，进行一些收尾工作"

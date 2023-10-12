@@ -2,6 +2,6 @@
 cd %~dp0
 :start
 git pull
-py "Diary Assistant.py"
+py DiaryAssistant.py
 pause
 goto start

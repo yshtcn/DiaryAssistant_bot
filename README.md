@@ -16,6 +16,20 @@
 
 # 使用方法
 
-首次运行时，会自动生成bot_config.json，并自动退出。
+## Windows版本
+
+首次运行时，会自动生成bot_config.json，并自动提示按任意键退出。
 然后把你的botid填进bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
 再次启动，向你的bot发送/start看看是否可以正常运行就可以了。
+
+## Docker版本
+
+```docker run -v /mydata:/data yshtcn/diary-assistant```
+
+其中-v 是必选参数，把/mydata换成映射的目的路径，首次运行时，会自动生成bot_config.json，并自动退出。
+然后把你的botid填进映射目的地址下的bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
+再次启动，向你的bot发送/start看看是否可以正常运行就可以了。
+
+可选参数：
+```-e PIP_INDEX_URL=https://pypi.official.url/simple```
+镜像默认使用清华大学的更新源，如果你需要修改使用其他地区的源可以指定。
