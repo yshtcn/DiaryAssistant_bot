@@ -18,9 +18,10 @@
 
 ## Windows版本
 
-首次运行时，会自动生成bot_config.json，并自动提示按任意键退出。
-然后把你的botid填进bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
-再次启动，向你的bot发送/start看看是否可以正常运行就可以了。
+- [在Release下载最新版本](https://github.com/yshtcn/DiaryAssistant_bot/releases)。
+- 首次运行时，会自动生成bot_config.json，并自动提示按任意键退出。
+- 然后把你的botid填进bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
+- 再次启动，向你的bot发送/start看看是否可以正常运行就可以了。
 
 ## Docker版本
 
