@@ -27,6 +27,7 @@
 
 ```docker run -v /mydata:/data yshtcn/diary-assistant:latest```
 
-把/mydata换成映射的目的路径，首次运行时，会自动生成bot_config.json，并自动退出。
-然后把你的botid填进映射目的地址下的bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
-再次启动，向你的bot发送/start看看是否可以正常运行就可以了。
+- 把/mydata换成映射的目的路径，首次运行时，会自动生成bot_config.json，并自动退出。
+- 然后把你的botid填进映射目的地址下的bot_config.json，并配置好代理地址（如果不需要代理地址，直接删除代理信息即可）。
+    - 注意，如果你无法编辑文件，可能需要给与权限:```chmod -R 777 /mydata```
+- 再次启动，向你的bot发送/start看看是否可以正常运行就可以了。

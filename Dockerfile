@@ -18,4 +18,4 @@ ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install --no-cache-dir -i $PIP_INDEX_URL requests
 
 # 设置容器启动后执行的命令
-CMD [ "python", "./Diary Assistant.py" ]
+CMD [ "python", "./DiaryAssistant.py" ]
