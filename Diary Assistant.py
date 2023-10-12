@@ -5,16 +5,10 @@ from datetime import datetime
 import os
 import json
 
-# 配置代理
-proxies = {
-    'http': 'http://127.0.0.1:7890',
-    'https': 'http://127.0.0.1:7890'
-}
+
+proxies = None
 
 TOKEN = None
-
-# 示范Token
-example_token = "Your_Token_Here"
 
 # 定义配置文件名
 config_filename = "bot_config.json"
@@ -27,18 +21,37 @@ if os.path.exists(config_path):
     with open(config_path, 'r') as f:
         config = json.load(f)
     TOKEN = config.get("TOKEN", "")
+    proxies_config = config.get("PROXIES", {})
     
     # 检查Token是否已设置
-    if TOKEN == example_token:
-        print("Please update your bot token in the config file.")
+    if not TOKEN:
+        print("Please set your bot token in the config file.")
         exit(1)
 else:
-    # 如果配置文件不存在，则创建一个新的配置文件并写入示范Token
-    config = {"TOKEN": example_token}
+    # 如果配置文件不存在，则创建一个新的配置文件并写入示范Token和示范代理
+    config = {
+        "TOKEN": "Your_Token_Here",
+        "PROXIES": {
+            "http": "http://127.0.0.1:7890",
+            "https": "http://127.0.0.1:7890"
+        }
+    }
+    # 将config对象转换为格式化的JSON字符串
+    config_str = json.dumps(config, indent=4) 
+
     with open(config_path, 'w') as f:
-        json.dump(config, f)
-    print(f"Config file created at {config_path}. Please update your bot token.")
+        f.write(config_str)
+    print(f"Config file created at {config_path}. Please set your bot token.")
     exit(1)
+
+# 设置代理
+if proxies_config:
+    proxies = {
+        'http': proxies_config.get('http', ''),
+        'https': proxies_config.get('https', '')
+    }
+else:
+    proxies = None
 
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
@@ -152,7 +165,7 @@ def process_message_queue():
 
 # 主程序逻辑
 def main():
-    print("Program started")  # Debugging line
+    print("Program started") 
     last_update_id = None
     while True:
         print("Process message queue...") 
