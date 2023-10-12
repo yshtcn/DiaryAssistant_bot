@@ -10,17 +10,22 @@ proxies = None
 
 TOKEN = None
 
-# 定义配置文件名
-config_filename = "bot_config.json"
+
 
 # 定义当前脚本所在目录（如果是frozen的使用exe所在的目录）
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if getattr(sys, 'frozen', False):
     current_dir = os.path.dirname(sys.executable)
 
+# 定义配置文件名
+config_filename = "bot_config.json"
+blacklist_filename="blacklist.json"
+message_queue_filename="message_queue.json"
+user_data_filename="user_data.json"
+
+
 # 检查配置文件是否存在
 config_path = os.path.join(current_dir, config_filename)
-
 
 if os.path.exists(config_path):
     # 读取配置文件
@@ -32,6 +37,12 @@ if os.path.exists(config_path):
     # 检查Token是否已设置
     if not TOKEN:
         print("Please set your bot token in the config file.")
+        input("Press any key to exit...")
+        exit(1)
+    #或者检查TOKEN是否等于”Your_Token_Here“
+    elif TOKEN == "Your_Token_Here":  
+        print("Please set your bot token in the config file.")
+        input("Press any key to exit...")
         exit(1)
 else:
     # 如果配置文件不存在，则创建一个新的配置文件并写入示范Token和示范代理
@@ -48,6 +59,8 @@ else:
     with open(config_path, 'w') as f:
         f.write(config_str)
     print(f"Config file created at {config_path}. Please set your bot token.")
+    # 等待用户按任意键退出
+    input("Press any key to exit...")
     exit(1)
 
 # 设置代理
@@ -91,7 +104,7 @@ def set_bot_commands():
 
 # 尝试从文件中加载黑名单
 try:
-    with open(os.path.join(current_dir, 'blacklist.json'), 'r') as f:
+    with open(os.path.join(current_dir, blacklist_filename), 'r') as f:
         blacklist = json.load(f)
 except FileNotFoundError:
     blacklist = []
@@ -113,7 +126,7 @@ def send_message(chat_id, text):
     try:
         # 尝试从文件中加载消息队列
         try:            
-            with open(os.path.join(current_dir, 'message_queue.json'), 'r') as f:
+            with open(os.path.join(current_dir, message_queue_filename), 'r') as f:
                 message_queue = json.load(f)
         except FileNotFoundError:
             message_queue = []
@@ -122,7 +135,7 @@ def send_message(chat_id, text):
         message_queue.append({'chat_id': chat_id, 'text': text})
         
         # 将更新后的消息队列保存回文件
-        with open(os.path.join(current_dir, 'message_queue.json'), 'w') as f:
+        with open(os.path.join(current_dir, message_queue_filename), 'w') as f:
             json.dump(message_queue, f)
     except Exception as e:
         print(f"Error queuing message: {e}")
@@ -135,7 +148,7 @@ def funcion_send_message(chat_id, text, reply_markup=None):
 def process_message_queue():
     # 尝试从文件中加载消息队列
     try:
-        with open(os.path.join(current_dir, 'message_queue.json'), 'r') as f:
+        with open(os.path.join(current_dir, message_queue_filename), 'r') as f:
             message_queue = json.load(f)
     except FileNotFoundError:
         message_queue = []
@@ -164,7 +177,7 @@ def process_message_queue():
             time.sleep(10) 
 
     # 将更新后（或未成功发送的）消息队列保存回文件
-    with open(os.path.join(current_dir, 'message_queue.json'), 'w') as f:
+    with open(os.path.join(current_dir, message_queue_filename), 'w') as f:
         json.dump(remaining_messages, f)
 
 
@@ -246,16 +259,16 @@ def main():
                         
 
                     # 保存数据到文件
-                    with open(os.path.join(current_dir, 'user_data.json'), 'w') as f:
+                    with open(os.path.join(current_dir, user_data_filename), 'w') as f:
                         json.dump(user_data, f)
-                    with open(os.path.join(current_dir, 'blacklist.json'), 'w') as f:
+                    with open(os.path.join(current_dir, blacklist_filename), 'w') as f:
                         json.dump(blacklist, f)
 
                 
                 # 保存数据到文件
-                with open(os.path.join(current_dir, 'user_data.json'), 'w') as f:
+                with open(os.path.join(current_dir, user_data_filename), 'w') as f:
                     json.dump(user_data, f)
-                with open(os.path.join(current_dir, 'blacklist.json'), 'w') as f:
+                with open(os.path.join(current_dir, blacklist_filename), 'w') as f:
                     json.dump(blacklist, f)
 
             
@@ -263,7 +276,7 @@ def main():
         else:
             print(f"{URL} Received updates: {updates}")
             print("Error or no updates; retrying in 10 seconds...")
-            time.sleep(10)  # 等待5秒再重试
+            time.sleep(10) 
         
 
         print("Process message queue...")
