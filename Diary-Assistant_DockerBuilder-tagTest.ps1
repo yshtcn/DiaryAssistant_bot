@@ -18,7 +18,7 @@ $dateTime = Get-Date -Format "yyyyMMdd"
 $revision = Read-Host -Prompt "请输入今天的版本次 ($dateTime,[?])"
 
 # 构建版本号
-$version = "$dateTime" + "_$revision"
+$version = "$dateTime" + "_$revision"+ "_Test"
 
 # 构建并打上版本号标签的 Docker 镜像
 docker build -t yshtcn/diary-assistant:$version .
