@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 import os
 import json
-
+import sys
 
 proxies = None
 
@@ -13,8 +13,14 @@ TOKEN = None
 # 定义配置文件名
 config_filename = "bot_config.json"
 
+# 定义当前脚本所在目录（如果是frozen的使用exe所在的目录）
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False):
+    current_dir = os.path.dirname(sys.executable)
+
 # 检查配置文件是否存在
-config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), config_filename)
+config_path = os.path.join(current_dir, config_filename)
+
 
 if os.path.exists(config_path):
     # 读取配置文件
@@ -57,7 +63,7 @@ URL = f"https://api.telegram.org/bot{TOKEN}/"
 
 # 尝试从文件中加载已有数据
 try:
-    with open('user_data.json', 'r') as f:
+    with open(os.path.join(current_dir, config_filename), 'r') as f:
         user_data = json.load(f)
 except (FileNotFoundError, json.JSONDecodeError):
     user_data = {}
@@ -85,7 +91,7 @@ def set_bot_commands():
 
 # 尝试从文件中加载黑名单
 try:
-    with open('blacklist.json', 'r') as f:
+    with open(os.path.join(current_dir, 'blacklist.json'), 'r') as f:
         blacklist = json.load(f)
 except FileNotFoundError:
     blacklist = []
@@ -106,8 +112,8 @@ def get_updates(offset=None):
 def send_message(chat_id, text):
     try:
         # 尝试从文件中加载消息队列
-        try:
-            with open('message_queue.json', 'r') as f:
+        try:            
+            with open(os.path.join(current_dir, 'message_queue.json'), 'r') as f:
                 message_queue = json.load(f)
         except FileNotFoundError:
             message_queue = []
@@ -116,7 +122,7 @@ def send_message(chat_id, text):
         message_queue.append({'chat_id': chat_id, 'text': text})
         
         # 将更新后的消息队列保存回文件
-        with open('message_queue.json', 'w') as f:
+        with open(os.path.join(current_dir, 'message_queue.json'), 'w') as f:
             json.dump(message_queue, f)
     except Exception as e:
         print(f"Error queuing message: {e}")
@@ -129,7 +135,7 @@ def funcion_send_message(chat_id, text, reply_markup=None):
 def process_message_queue():
     # 尝试从文件中加载消息队列
     try:
-        with open('message_queue.json', 'r') as f:
+        with open(os.path.join(current_dir, 'message_queue.json'), 'r') as f:
             message_queue = json.load(f)
     except FileNotFoundError:
         message_queue = []
@@ -158,7 +164,7 @@ def process_message_queue():
             time.sleep(10) 
 
     # 将更新后（或未成功发送的）消息队列保存回文件
-    with open('message_queue.json', 'w') as f:
+    with open(os.path.join(current_dir, 'message_queue.json'), 'w') as f:
         json.dump(remaining_messages, f)
 
 
@@ -240,16 +246,16 @@ def main():
                         
 
                     # 保存数据到文件
-                    with open('user_data.json', 'w') as f:
+                    with open(os.path.join(current_dir, 'user_data.json'), 'w') as f:
                         json.dump(user_data, f)
-                    with open('blacklist.json', 'w') as f:
+                    with open(os.path.join(current_dir, 'blacklist.json'), 'w') as f:
                         json.dump(blacklist, f)
 
                 
                 # 保存数据到文件
-                with open('user_data.json', 'w') as f:
+                with open(os.path.join(current_dir, 'user_data.json'), 'w') as f:
                     json.dump(user_data, f)
-                with open('blacklist.json', 'w') as f:
+                with open(os.path.join(current_dir, 'blacklist.json'), 'w') as f:
                     json.dump(blacklist, f)
 
             
