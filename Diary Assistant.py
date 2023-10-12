@@ -12,10 +12,15 @@ TOKEN = None
 
 
 
-# 定义当前脚本所在目录（如果是frozen的使用exe所在的目录）
+# 定义当前脚本所在目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
+#如果是frozen的使用exe所在的目录
 if getattr(sys, 'frozen', False):
     current_dir = os.path.dirname(sys.executable)
+#如果是docker，设置为data目录
+if os.path.exists('/.dockerenv'):
+    current_dir = '/data'
+
 
 # 定义配置文件名
 config_filename = "bot_config.json"
