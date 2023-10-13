@@ -13,7 +13,7 @@ cls
 title "AutoPyInstaller：初始化"
 
 :: 让我们设置一些信息
-set "ProductName=Diary Assistant"
+set "ProductName=DiaryAssistant_Bot"
 set "InternalName=yshtcn"
 set "Comments=GitHub: https://github.com/yshtcn/DiaryAssistant_bot"
 
@@ -41,7 +41,7 @@ set "day=%datetime:~6,2%"
 set /p "revision=请输入今天的版本次:(%year%, %month%, %day%,[?]):"
 
 :: 当前版本目录（未去除先导0）
-set "versionFolder=%year%_%month%_%day%_%revision%"
+set "versionFolder=%ProductName%_Win_%year%_%month%_%day%_%revision%"
 
 :: 去除月和日的前导零（如果有）
 set /a "month=1%month%-100"
@@ -100,7 +100,7 @@ md build
 rd /S /Q %~dp0\build\%versionFolder%
 
 :: 删除打包目录产生的过程文件
-del /q %~dp0\build\heartbeat.spec
+del /q %~dp0\build\DiaryAssistant.spec
 rd /S /Q %~dp0\build\build
 
 :: 进入打包目录并开始打包
@@ -112,7 +112,7 @@ title "AutoPyInstaller：打包完毕，进行一些收尾工作"
 :: （再次）删除打包目录下同版本号的文件夹
 rd /S /Q %~dp0\build\%versionFolder%
 :: （再次）删除打包目录产生的过程文件
-del /q "%~dp0\build\Diary Assistant.spec"
+del /q %~dp0\build\DiaryAssistant.spec
 rd /S /Q %~dp0\build\build
 
 :: 把生成打包的目录以版本号重命名

@@ -31,6 +31,7 @@ user_data_filename="user_data.json"
 
 # 检查配置文件是否存在
 config_path = os.path.join(current_dir, config_filename)
+print(f"Config file path: {config_path}")
 
 if os.path.exists(config_path):
     # 读取配置文件
@@ -60,7 +61,7 @@ else:
     }
     # 将config对象转换为格式化的JSON字符串
     config_str = json.dumps(config, indent=4) 
-
+    print(config_str)
     with open(config_path, 'w') as f:
         f.write(config_str)
     print(f"Config file created at {config_path}. Please set your bot token.")
@@ -81,10 +82,21 @@ URL = f"https://api.telegram.org/bot{TOKEN}/"
 
 # 尝试从文件中加载已有数据
 try:
-    with open(os.path.join(current_dir, config_filename), 'r') as f:
+    with open(os.path.join(current_dir, user_data_filename), 'r') as f:
         user_data = json.load(f)
+    print(f"User data loaded: {user_data}")
 except (FileNotFoundError, json.JSONDecodeError):
+    print("No user data found; starting with empty data.")
     user_data = {}
+
+# 尝试从文件中加载黑名单
+try:
+    with open(os.path.join(current_dir, blacklist_filename), 'r') as f:
+        blacklist = json.load(f)
+    print(f"Blacklist loaded: {blacklist}")
+except FileNotFoundError:
+    blacklist = []
+    print("No blacklist found; starting with empty blacklist.")
 
 def set_bot_commands():
     try:
@@ -105,14 +117,6 @@ def set_bot_commands():
         return f"HTTP error occurred: {http_err} - {response.text}"
     except Exception as err:
         return f"An error occurred: {err}"
-
-
-# 尝试从文件中加载黑名单
-try:
-    with open(os.path.join(current_dir, blacklist_filename), 'r') as f:
-        blacklist = json.load(f)
-except FileNotFoundError:
-    blacklist = []
 
 
 # 获取更新
@@ -239,12 +243,13 @@ def main():
                         send_message(chat_id_str, f"#二次确认\n---\n你真的要结束本次记录吗？确认请点击： /confirmdone \n如果不想结束本次记录，直接忽视这条信息、继续发送信息或使用其他指令都可以。")                        
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/confirmdone":
-                        main_text="\n\n".join(user_data[chat_id_str])
+                        main_text="\n\n".join(user_data.get(chat_id_str, []))
                         send_message(chat_id_str, f"#结束记录\n以下是记录的全部内容：\n---\n```\n{main_text}\n```\n---\n下次发送消息将开始新的记录.")
                         user_data[chat_id_str] = []
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/check":
-                        main_text="\n\n".join(user_data[chat_id_str])
+                        print(f"user_data: {user_data}")
+                        main_text="\n\n".join(user_data.get(chat_id_str, []))
                         send_message(chat_id_str, f"#查看记录\n以下是已记录的全部内容：\n---\n```\n{main_text}\n```\n---\n发送消息将继续当前的记录.")
                         blacklist.append(unique_id)
                     elif message_text.lower() == "/removelast":
