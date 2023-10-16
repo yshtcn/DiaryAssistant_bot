@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 import json
 import sys
+from tqdm import tqdm
 
 proxies = None
 
@@ -164,7 +165,7 @@ def process_message_queue():
         
     # 遍历消息队列，尝试发送消息
     remaining_messages = []
-    for message in message_queue:        
+    for message in tqdm(message_queue,desc="send message loop:"):        
         chat_id = message['chat_id']
         text = message['text']
         try:
@@ -200,12 +201,12 @@ def main():
         process_message_queue()
         result = set_bot_commands()
         print(f"set menu：{result}")     
-        print("Checking for updates...")  
+        print("Check updates,Waiting for response...")  
         updates = get_updates(last_update_id)
         if updates and "result" in updates:          
 
             print(f"Received updates: {updates}")  
-            for update in updates["result"]:
+            for update in tqdm(updates["result"],desc="get result loop:"):
                 Messagetype='message'
                 if 'edited_message' in update:
                     Messagetype='edited_message'
