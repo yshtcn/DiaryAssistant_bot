@@ -15,7 +15,7 @@ RUN mkdir /data && chmod -R 777 /data
 ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 安装 Python 依赖
-RUN pip install --no-cache-dir -i $PIP_INDEX_URL requests
+RUN pip install --no-cache-dir -i $PIP_INDEX_URL requests tqdm
 
 # 设置容器启动后执行的命令
 CMD [ "python", "./DiaryAssistant.py" ]
