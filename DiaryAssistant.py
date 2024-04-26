@@ -233,7 +233,7 @@ def main():
                 if unique_id not in blacklist:
                     # 处理特殊命令
                     if message_text.lower() == "/start":
-                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使用日记和日程助手机器人，你可以直接开始发送要记录的文字内容。以下是机器人可用指令: \n/check #查看记录 \n/done #结束记录 \n/stopprompt ： 如果你想直接跟GPT一条一条的对话，需要在开始时适用GPTs上的开始语，并在结束时使用结束提示语 #GPT提示语 \n/removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）\n/today 发送今天的日期。\n/nowstart 把当前时间作为开始时间。（描述为：XX时间开始）\n/today 把当前时间作为结束时间。（描述为：直到XX时间结束）") 
+                        send_message(chat_id_str, f"#使用帮助\n---\n欢迎使用日记和日程助手机器人，你可以直接开始发送要记录的文字内容。以下是机器人可用指令: \n/check #查看记录 \n/done #结束记录 \n/stopprompt ： 如果你想直接跟GPT一条一条的对话，需要在开始时适用GPTs上的开始语，并在结束时使用结束提示语 #GPT提示语 \n/removelast 删除最后一条信息。（注意：直接编辑信息并不会修改错误的记录！）\n/today 发送今天的日期。\n/nowstart 把当前时间作为开始时间。（描述为：XX时间开始）\n/nowend 把当前时间作为结束时间。（描述为：直到XX时间结束）") 
                         send_message(chat_id_str, f"#ChatGPT————日记助手GPTs：https://chat.openai.com/g/g-mj9dk2h4X-ri-ji-zhu-shou")
                         send_message(chat_id_str, f"#ChatGPT————日程助手GPTs：https://chat.openai.com/g/g-ieyhqf6J9-ri-cheng-zhu-shou")          
                         blacklist.append(unique_id)
