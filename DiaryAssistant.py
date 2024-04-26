@@ -103,15 +103,15 @@ def set_bot_commands():
     try:
         set_commands_url = URL + "setMyCommands"
         commands = [
-            {"command": "/start", "description": "首次使用"},
-            # {"command": "/prompt", "description": "GPT分次对话提示语"},
-            {"command": "/stopprompt", "description": "GPT分次结束对话提示语"},
-            {"command": "/done", "description": "结束记录"},
-            {"command": "/check", "description": "检查记录"},
-            {"command": "/removelast", "description": "删除最后记录"},
             {"command": "/today", "description": "发送今天的日期"},
             {"command": "/nowstart", "description": "发送现在的时间作为开始时间"},
-            {"command": "/nowend", "description": "发送现在的时间作为结束时间"}
+            {"command": "/nowend", "description": "发送现在的时间作为结束时间"},
+            {"command": "/removelast", "description": "删除最后记录"},
+            {"command": "/check", "description": "检查记录"},
+            {"command": "/done", "description": "结束记录"}, 
+            # {"command": "/prompt", "description": "GPT分次对话提示语"},
+            {"command": "/stopprompt", "description": "GPT分次结束对话提示语"},          
+            {"command": "/start", "description": "首次使用"}
         ]
         response = requests.post(set_commands_url, json={"commands": commands}, proxies=proxies)
         response.raise_for_status()  # 如果响应状态码不是200，引发HTTPError异常
